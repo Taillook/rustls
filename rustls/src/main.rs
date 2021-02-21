@@ -1,6 +1,4 @@
-use std::path::Path;
-use std::env;
-use std::fs;
+use std::{env, fs, path::Path, path::PathBuf, vec::Vec};
 
 fn main() {
     let target_path = match env::args().nth(1) {
@@ -8,8 +6,16 @@ fn main() {
         None => "./".to_string(),
     };
 
-    let paths = fs::read_dir(Path::new(&target_path)).unwrap();
+    let paths = read_dir(target_path);
     for path in paths {
-        println!("{}", path.unwrap().path().display())
+        println!("{}", path.as_path().display())
     }
+}
+
+fn read_dir(target_path: String) -> Vec<PathBuf> {
+    return fs::read_dir(Path::new(&target_path))
+        .unwrap()
+        .filter_map(|entry| entry.ok())
+        .map(|entry| entry.path())
+        .collect::<Vec<PathBuf>>();
 }
