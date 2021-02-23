@@ -6,9 +6,10 @@ fn main() {
         None => "./".to_string(),
     };
 
-    let paths = read_dir_sorted(target_path);
-    for path in paths {
-        println!("{}", path.as_path().display())
+    let mut dir_pathbufs = read_dir_sorted(target_path);
+    dir_pathbufs = filter_invisible(dir_pathbufs);
+    for dir_pathbuf in dir_pathbufs {
+        println!("{}", dir_pathbuf.as_path().display())
     }
 }
 
@@ -32,4 +33,28 @@ fn read_dir_sorted(target_path: String) -> Vec<PathBuf> {
     });
 
     return dir_pathbufs;
+}
+
+fn filter_invisible(dir_pathbufs: Vec<PathBuf>) -> Vec<PathBuf> {
+    let mut dpbs: Vec<PathBuf> = vec![];
+
+    for dir_pathbuf in dir_pathbufs.iter() {
+        // HELP: write more shorter 
+        if dir_pathbuf
+            .as_path()
+            .file_name()
+            .unwrap()
+            .to_os_string()
+            .into_string()
+            .unwrap()
+            .chars()
+            .next()
+            .unwrap()
+            != '.'
+        {
+            dpbs.push(dir_pathbuf.clone());
+        }
+    }
+
+    return dpbs;
 }
