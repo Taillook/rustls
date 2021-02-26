@@ -1,4 +1,5 @@
-use std::{env, fs, path::Path, path::PathBuf, vec::Vec};
+use libc::{ioctl, winsize, STDOUT_FILENO, TIOCGWINSZ};
+use std::{env, fs, path::Path, path::PathBuf, vec::Vec, mem};
 
 fn main() {
     let target_path = match env::args().nth(1) {
@@ -36,7 +37,7 @@ fn read_dir_sorted(target_path: String) -> Vec<PathBuf> {
 }
 
 fn filter_invisible(dir_pathbufs: Vec<PathBuf>) -> Vec<PathBuf> {
-    let mut dpbs: Vec<PathBuf> = vec![];
+    let mut output: Vec<PathBuf> = vec![];
 
     for dir_pathbuf in dir_pathbufs.iter() {
         // HELP: write more shorter 
@@ -52,9 +53,20 @@ fn filter_invisible(dir_pathbufs: Vec<PathBuf>) -> Vec<PathBuf> {
             .unwrap()
             != '.'
         {
-            dpbs.push(dir_pathbuf.clone());
+            output.push(dir_pathbuf.clone());
         }
     }
 
-    return dpbs;
+    return output;
+}
+
+fn window_size() -> Option<winsize> {
+    let fd = STDOUT_FILENO;
+
+    let mut ws: winsize = unsafe { mem::zeroed() };
+    if unsafe { ioctl(fd, TIOCGWINSZ, &mut ws) } == -1 {
+        None
+    } else {
+        Some(ws)
+    }
 }
