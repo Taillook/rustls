@@ -112,8 +112,14 @@ fn printcol(dir_pathbufs: &Vec<PathBuf>) {
     }
 
     let numcols = maxsize / colwidth - 1;
+    let mut output = dir_pathbufs.clone();
+    output = transpose(
+        output,
+        numcols,
+        (dir_pathbufs.len() + (numcols - 1)) / numcols,
+    );
 
-    for (idx, dir_pathbuf) in dir_pathbufs.iter().enumerate() {
+    for (idx, dir_pathbuf) in output.iter().enumerate() {
         let file_name = match dir_pathbuf.file_name() {
             Some(file_name) => file_name.to_os_string().into_string().unwrap(),
             None => "".to_string(),
@@ -131,9 +137,5 @@ fn printcol(dir_pathbufs: &Vec<PathBuf>) {
         } else {
             print!("\t");
         }
-    }
-
-    if numcols > dir_pathbufs.len() {
-        println!("");
     }
 }
