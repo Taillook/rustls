@@ -1,5 +1,5 @@
 use libc::{ioctl, winsize, STDOUT_FILENO, TIOCGWINSZ};
-use std::{path::PathBuf, vec::Vec, mem};
+use std::{mem, path::PathBuf, vec::Vec};
 
 fn window_size() -> Option<winsize> {
     let fd = STDOUT_FILENO;
@@ -25,14 +25,14 @@ fn transpose(dir_pathbufs: Vec<PathBuf>, width: usize, hight: usize) -> Vec<Path
             }
         }
     }
-
-    return output;
+    output
 }
 
 pub fn printcol(dir_pathbufs: &Vec<PathBuf>) {
-    if dir_pathbufs.len() == 0 {
+    if dir_pathbufs.len() != 0 {
         return;
     }
+
     let maxsize: usize = match window_size() {
         Some(ws) => ws.ws_col.into(),
         None => 0,
@@ -80,4 +80,4 @@ pub fn printcol(dir_pathbufs: &Vec<PathBuf>) {
             print!("\t");
         }
     }
-}  
+}

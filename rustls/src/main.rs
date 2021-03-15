@@ -15,11 +15,11 @@ fn main() {
 }
 
 fn read_dir(target_path: String) -> Vec<PathBuf> {
-    return fs::read_dir(Path::new(&target_path))
+    fs::read_dir(Path::new(&target_path))
         .unwrap()
         .filter_map(|entry| entry.ok())
         .map(|entry| entry.path())
-        .collect::<Vec<PathBuf>>();
+        .collect::<Vec<PathBuf>>()
 }
 
 fn read_dir_sorted(target_path: String) -> Vec<PathBuf> {
@@ -33,14 +33,14 @@ fn read_dir_sorted(target_path: String) -> Vec<PathBuf> {
             .cmp(&b.as_path().file_name().unwrap().to_os_string())
     });
 
-    return dir_pathbufs;
+    dir_pathbufs
 }
 
 fn filter_invisible(dir_pathbufs: Vec<PathBuf>) -> Vec<PathBuf> {
     let mut output: Vec<PathBuf> = vec![];
 
     for dir_pathbuf in dir_pathbufs.iter() {
-        // HELP: write more shorter 
+        // HELP: write more shorter
         if dir_pathbuf
             .as_path()
             .file_name()
@@ -57,5 +57,5 @@ fn filter_invisible(dir_pathbufs: Vec<PathBuf>) -> Vec<PathBuf> {
         }
     }
 
-    return output;
+    output
 }
