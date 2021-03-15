@@ -28,7 +28,7 @@ fn transpose(dir_pathbufs: Vec<PathBuf>, width: usize, hight: usize) -> Vec<Path
     output
 }
 
-pub fn printcol(dir_pathbufs: &Vec<PathBuf>) {
+pub fn printcol(dir_pathbufs: &[PathBuf]) {
     if dir_pathbufs.is_empty() {
         return;
     }
@@ -54,7 +54,7 @@ pub fn printcol(dir_pathbufs: &Vec<PathBuf>) {
     }
 
     let numcols = maxsize / colwidth - 1;
-    let mut output = dir_pathbufs.clone();
+    let mut output = dir_pathbufs.to_owned();
     output = transpose(
         output,
         numcols,
