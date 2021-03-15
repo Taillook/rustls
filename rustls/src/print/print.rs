@@ -13,7 +13,7 @@ fn window_size() -> Option<winsize> {
 }
 
 fn transpose(dir_pathbufs: Vec<PathBuf>, width: usize, hight: usize) -> Vec<PathBuf> {
-    let mut input: Vec<PathBuf> = dir_pathbufs.clone();
+    let mut input: Vec<PathBuf> = dir_pathbufs;
     let mut output: Vec<PathBuf> = vec![PathBuf::default(); width * hight];
     // HELP: please more efficient algorithm.
     'outer: for i in 0..width {
