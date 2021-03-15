@@ -75,7 +75,7 @@ pub fn printcol(dir_pathbufs: &Vec<PathBuf>) {
             }
         }
         if idx != 0 && (idx + 1) % numcols == 0 {
-            print!("\n");
+            println!();
         } else {
             print!("\t");
         }
