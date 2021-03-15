@@ -44,18 +44,13 @@ fn filter_invisible(dir_pathbufs: Vec<PathBuf>) -> Vec<PathBuf> {
     let mut output: Vec<PathBuf> = vec![];
 
     for dir_pathbuf in dir_pathbufs.iter() {
-        // HELP: write more shorter
-        if dir_pathbuf
+        if !dir_pathbuf
             .as_path()
             .file_name()
             .unwrap()
-            .to_os_string()
-            .into_string()
+            .to_str()
             .unwrap()
-            .chars()
-            .next()
-            .unwrap()
-            != '.'
+            .starts_with('.')
         {
             output.push(dir_pathbuf.clone());
         }
