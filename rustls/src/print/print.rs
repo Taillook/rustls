@@ -20,7 +20,7 @@ fn transpose(dir_pathbufs: Vec<PathBuf>, width: usize, hight: usize) -> Vec<Path
         for j in 0..hight {
             output[(j * width) + i] = input[0].clone();
             input.remove(0);
-            if input.len() == 0 {
+            if input.is_empty() {
                 break 'outer;
             }
         }
