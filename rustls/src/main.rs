@@ -3,26 +3,30 @@ use std::{env, fs, path::Path, path::PathBuf, vec::Vec};
 use rustls::print::print;
 
 fn main() {
-    let target_path = match env::args().nth(1) {
+    let target_path_name = match env::args().nth(1) {
         Some(path) => path,
         None => "./".to_string(),
     };
 
-    let mut dir_pathbufs = read_dir_sorted(target_path);
-
-    dir_pathbufs = filter_invisible(dir_pathbufs);
-    print::printcol(&dir_pathbufs);
+    let target_path = Path::new(&target_path_name);
+    if target_path.is_dir() {
+        let mut dir_pathbufs = read_dir_sorted(target_path);
+        dir_pathbufs = filter_invisible(dir_pathbufs);
+        print::printcol(&dir_pathbufs);
+    } else {
+        println!("{}", target_path.to_str().unwrap());
+    }
 }
 
-fn read_dir(target_path: String) -> Vec<PathBuf> {
-    fs::read_dir(Path::new(&target_path))
+fn read_dir(target_path: &Path) -> Vec<PathBuf> {
+    fs::read_dir(&target_path)
         .unwrap()
         .filter_map(|entry| entry.ok())
         .map(|entry| entry.path())
         .collect::<Vec<PathBuf>>()
 }
 
-fn read_dir_sorted(target_path: String) -> Vec<PathBuf> {
+fn read_dir_sorted(target_path: &Path) -> Vec<PathBuf> {
     let mut dir_pathbufs = read_dir(target_path);
 
     dir_pathbufs.sort_by(|a, b| {

@@ -29,7 +29,7 @@ fn transpose(dir_pathbufs: Vec<PathBuf>, width: usize, hight: usize) -> Vec<Path
 }
 
 pub fn printcol(dir_pathbufs: &Vec<PathBuf>) {
-    if dir_pathbufs.len() != 0 {
+    if dir_pathbufs.len() == 0 {
         return;
     }
 
