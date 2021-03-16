@@ -1,6 +1,6 @@
 use std::{env, fs, path::Path, path::PathBuf, vec::Vec};
 
-use rustls::print::print;
+mod print;
 
 fn main() {
     let target_path_name = match env::args().nth(1) {
