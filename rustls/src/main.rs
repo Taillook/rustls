@@ -1,4 +1,4 @@
-use std::{env, fs, path::Path, path::PathBuf, vec::Vec};
+use std::{env, fs, path::Path, path::PathBuf, process, vec::Vec};
 
 mod print;
 
@@ -9,6 +9,13 @@ fn main() {
     };
 
     let target_path = Path::new(&target_path_name);
+    if !target_path.exists() {
+        println!(
+            "rustls: {}: No such file or directory",
+            target_path.to_str().unwrap()
+        );
+        process::exit(1);
+    }
     if target_path.is_dir() {
         let mut dir_pathbufs = read_dir_sorted(target_path);
         dir_pathbufs = filter_invisible(dir_pathbufs);
