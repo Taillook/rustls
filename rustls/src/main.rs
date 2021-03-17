@@ -17,8 +17,7 @@ fn main() {
         process::exit(1);
     }
     if target_path.is_dir() {
-        let mut dir_pathbufs = read_dir_sorted(target_path);
-        dir_pathbufs = filter_invisible(dir_pathbufs);
+        let dir_pathbufs = filter_invisible(&read_dir_sorted(target_path));
         print::printcol(&dir_pathbufs);
     } else {
         println!("{}", target_path.to_str().unwrap());
@@ -47,18 +46,12 @@ fn read_dir_sorted(target_path: &Path) -> Vec<PathBuf> {
     dir_pathbufs
 }
 
-fn filter_invisible(dir_pathbufs: Vec<PathBuf>) -> Vec<PathBuf> {
+fn filter_invisible(dir_pathbufs: &[PathBuf]) -> Vec<PathBuf> {
     let mut output: Vec<PathBuf> = vec![];
 
     for dir_pathbuf in dir_pathbufs.iter() {
-        if !dir_pathbuf
-            .as_path()
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .starts_with('.')
-        {
+        let dir_name_str = dir_pathbuf.as_path().file_name().unwrap().to_str().unwrap();
+        if !dir_name_str.starts_with('.') {
             output.push(dir_pathbuf.clone());
         }
     }
