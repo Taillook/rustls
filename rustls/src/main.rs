@@ -18,7 +18,7 @@ fn main() {
     }
     if target_path.is_dir() {
         let dir_pathbufs = filter_invisible(&read_dir_sorted(target_path));
-        print::printcol(&dir_pathbufs);
+        print::printcol(&dir_pathbufs.unwrap());
     } else {
         println!("{}", target_path.to_str().unwrap());
     }
@@ -46,15 +46,15 @@ fn read_dir_sorted(target_path: &Path) -> Vec<PathBuf> {
     dir_pathbufs
 }
 
-fn filter_invisible(dir_pathbufs: &[PathBuf]) -> Vec<PathBuf> {
+fn filter_invisible(dir_pathbufs: &[PathBuf]) -> Option<Vec<PathBuf>> {
     let mut output: Vec<PathBuf> = vec![];
 
     for dir_pathbuf in dir_pathbufs.iter() {
-        let dir_name_str = dir_pathbuf.as_path().file_name().unwrap().to_str().unwrap();
+        let dir_name_str = dir_pathbuf.as_path().file_name()?.to_str()?;
         if !dir_name_str.starts_with('.') {
             output.push(dir_pathbuf.clone());
         }
     }
 
-    output
+    Some(output)
 }
