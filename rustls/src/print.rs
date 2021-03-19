@@ -27,6 +27,21 @@ fn transpose(dir_pathbufs: &[PathBuf], width: &usize, hight: &usize) -> Vec<Path
     output
 }
 
+fn file_name_by_pathbuf(dir_pathbuf: &PathBuf) -> String {
+    match dir_pathbuf.file_name() {
+        Some(file_name) => file_name.to_os_string().into_string().unwrap_or("".to_string()),
+        None => "".to_string(), 
+    }
+}
+#[test]
+fn test_file_name_by_pathbuf() {
+    let pathbuf = PathBuf::default();
+    assert_eq!(file_name_by_pathbuf(&pathbuf), "".to_string());
+    let mut pathbuf = PathBuf::from("./");
+    pathbuf.set_file_name("test.txt");
+    assert_eq!(file_name_by_pathbuf(&pathbuf), "test.txt".to_string());
+}
+
 pub fn printcol(dir_pathbufs: &[PathBuf]) {
     if dir_pathbufs.is_empty() {
         return;
