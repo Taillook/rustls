@@ -11,12 +11,12 @@ fn window_size() -> Option<usize> {
     }
 }
 
-fn transpose(dir_pathbufs: Vec<PathBuf>, width: usize, hight: usize) -> Vec<PathBuf> {
-    let mut input: Vec<PathBuf> = dir_pathbufs;
+fn transpose(dir_pathbufs: &[PathBuf], width: &usize, hight: &usize) -> Vec<PathBuf> {
+    let mut input: Vec<PathBuf> = dir_pathbufs.to_owned();
     let mut output: Vec<PathBuf> = vec![PathBuf::default(); width * hight];
     // HELP: please more efficient algorithm.
-    'outer: for i in 0..width {
-        for j in 0..hight {
+    'outer: for i in 0..*width {
+        for j in 0..*hight {
             output[(j * width) + i] = input[0].clone();
             input.remove(0);
             if input.is_empty() {
@@ -55,9 +55,9 @@ pub fn printcol(dir_pathbufs: &[PathBuf]) {
     let numcols = maxsize / colwidth - 1;
     let mut output = dir_pathbufs.to_owned();
     output = transpose(
-        output,
-        numcols,
-        (dir_pathbufs.len() + (numcols - 1)) / numcols,
+        &output,
+        &numcols,
+        &((dir_pathbufs.len() + (numcols - 1)) / numcols),
     );
 
     for (idx, dir_pathbuf) in output.iter().enumerate() {
