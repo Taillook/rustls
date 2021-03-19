@@ -32,10 +32,7 @@ pub fn printcol(dir_pathbufs: &[PathBuf]) {
         return;
     }
 
-    let maxsize: usize = match window_size() {
-        Some(ws) => ws,
-        None => 0,
-    };
+    let maxsize: usize = window_size().unwrap_or(0);
 
     let mut colwidth = 0;
     for dir_pathbuf in dir_pathbufs {
