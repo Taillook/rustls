@@ -51,14 +51,7 @@ pub fn printcol(dir_pathbufs: &[PathBuf]) {
 
     let mut colwidth = 0;
     for dir_pathbuf in dir_pathbufs {
-        let file_name_len = (dir_pathbuf
-            .file_name()
-            .unwrap()
-            .to_os_string()
-            .into_string()
-            .unwrap()
-            + "\t")
-            .len();
+        let file_name_len = (file_name_by_pathbuf(dir_pathbuf) + "\t").len();
         if colwidth < file_name_len {
             colwidth = file_name_len;
         }
@@ -73,10 +66,7 @@ pub fn printcol(dir_pathbufs: &[PathBuf]) {
     );
 
     for (idx, dir_pathbuf) in output.iter().enumerate() {
-        let file_name = match dir_pathbuf.file_name() {
-            Some(file_name) => file_name.to_os_string().into_string().unwrap(),
-            None => "".to_string(),
-        };
+        let file_name = file_name_by_pathbuf(dir_pathbuf);
         let file_name_len = file_name.len();
 
         if file_name_len != 0 {
