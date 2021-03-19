@@ -11,8 +11,8 @@ fn window_size() -> Option<usize> {
     }
 }
 
-fn transpose(dir_pathbufs: &[PathBuf], width: &usize, hight: &usize) -> Vec<PathBuf> {
-    let mut input: Vec<PathBuf> = dir_pathbufs.to_owned();
+fn transpose(pathbufs: &[PathBuf], width: &usize, hight: &usize) -> Vec<PathBuf> {
+    let mut input: Vec<PathBuf> = pathbufs.to_owned();
     let mut output: Vec<PathBuf> = vec![PathBuf::default(); width * hight];
     // HELP: please more efficient algorithm.
     'outer: for i in 0..*width {
@@ -27,10 +27,13 @@ fn transpose(dir_pathbufs: &[PathBuf], width: &usize, hight: &usize) -> Vec<Path
     output
 }
 
-fn file_name_by_pathbuf(dir_pathbuf: &PathBuf) -> String {
-    match dir_pathbuf.file_name() {
-        Some(file_name) => file_name.to_os_string().into_string().unwrap_or("".to_string()),
-        None => "".to_string(), 
+fn file_name_by_pathbuf(pathbuf: &PathBuf) -> String {
+    match pathbuf.file_name() {
+        Some(file_name) => file_name
+            .to_os_string()
+            .into_string()
+            .unwrap_or("".to_string()),
+        None => "".to_string(),
     }
 }
 #[test]
@@ -42,31 +45,31 @@ fn test_file_name_by_pathbuf() {
     assert_eq!(file_name_by_pathbuf(&pathbuf), "test.txt".to_string());
 }
 
-pub fn printcol(dir_pathbufs: &[PathBuf]) {
-    if dir_pathbufs.is_empty() {
+pub fn printcol(pathbufs: &[PathBuf]) {
+    if pathbufs.is_empty() {
         return;
     }
 
     let maxsize: usize = window_size().unwrap_or(0);
 
     let mut colwidth = 0;
-    for dir_pathbuf in dir_pathbufs {
-        let file_name_len = (file_name_by_pathbuf(dir_pathbuf) + "\t").len();
+    for pathbuf in pathbufs {
+        let file_name_len = (file_name_by_pathbuf(pathbuf) + "\t").len();
         if colwidth < file_name_len {
             colwidth = file_name_len;
         }
     }
 
     let numcols = maxsize / colwidth - 1;
-    let mut output = dir_pathbufs.to_owned();
+    let mut output = pathbufs.to_owned();
     output = transpose(
         &output,
         &numcols,
-        &((dir_pathbufs.len() + (numcols - 1)) / numcols),
+        &((pathbufs.len() + (numcols - 1)) / numcols),
     );
 
-    for (idx, dir_pathbuf) in output.iter().enumerate() {
-        let file_name = file_name_by_pathbuf(dir_pathbuf);
+    for (idx, pathbuf) in output.iter().enumerate() {
+        let file_name = file_name_by_pathbuf(pathbuf);
         let file_name_len = file_name.len();
 
         if file_name_len != 0 {
