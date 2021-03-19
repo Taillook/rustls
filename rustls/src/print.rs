@@ -1,14 +1,13 @@
 use libc::{ioctl, winsize, STDOUT_FILENO, TIOCGWINSZ};
 use std::{mem, path::PathBuf, vec::Vec};
 
-fn window_size() -> Option<winsize> {
+fn window_size() -> Option<usize> {
     let fd = STDOUT_FILENO;
 
     let mut ws: winsize = unsafe { mem::zeroed() };
-    if unsafe { ioctl(fd, TIOCGWINSZ, &mut ws) } == -1 {
-        None
-    } else {
-        Some(ws)
+    match unsafe { ioctl(fd, TIOCGWINSZ, &mut ws) } == -1 {
+        false => Some(ws.ws_col.into()),
+        true => None,
     }
 }
 
@@ -34,7 +33,7 @@ pub fn printcol(dir_pathbufs: &[PathBuf]) {
     }
 
     let maxsize: usize = match window_size() {
-        Some(ws) => ws.ws_col.into(),
+        Some(ws) => ws,
         None => 0,
     };
 
