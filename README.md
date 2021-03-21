@@ -1,5 +1,8 @@
-# rustls
+# rustyls
 
-ls command by rust
+rustyls is clone of _ls_.
 
-this repository is for leaning rust.
+## Development
+
+Written in Rust `rustc 1.50.0`.  
+Can compile with `cargo`.
