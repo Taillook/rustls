@@ -1,13 +1,27 @@
-use clap::{app_from_crate, crate_name, crate_version, crate_authors, crate_description};
+use clap::{Arg, app_from_crate, crate_name, crate_version, crate_authors, crate_description};
 use std::{env, fs, path::Path, path::PathBuf, process, vec::Vec};
 
 mod print;
 
 fn main() {
-    let app = app_from_crate!();
+    let app = app_from_crate!()
+            .arg(Arg::with_name("columns")
+                .help("list entries by columns")
+                .short("C")
+            )
+            .arg(Arg::with_name("file")
+                .help("FILE")
+                .index(1)
+            );
+    let matches = app.get_matches();
+    if matches.is_present("columns") {
+        colmuns(matches.value_of("file"));
+    }
+}
 
-    let target_path_name = match env::args().nth(1) {
-        Some(path) => path,
+fn colmuns(file_name: Option<&str>) {
+    let target_path_name = match file_name {
+        Some(path) => path.to_string(),
         None => "./".to_string(),
     };
 
