@@ -32,7 +32,7 @@ fn file_name_by_pathbuf(pathbuf: &PathBuf) -> String {
         Some(file_name) => file_name
             .to_os_string()
             .into_string()
-            .unwrap_or("".to_string()),
+            .unwrap_or_else(|_| "".to_string()),
         None => "".to_string(),
     }
 }

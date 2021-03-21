@@ -1,8 +1,11 @@
+use clap::{app_from_crate, crate_name, crate_version, crate_authors, crate_description};
 use std::{env, fs, path::Path, path::PathBuf, process, vec::Vec};
 
 mod print;
 
 fn main() {
+    let app = app_from_crate!();
+
     let target_path_name = match env::args().nth(1) {
         Some(path) => path,
         None => "./".to_string(),

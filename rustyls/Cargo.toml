@@ -1,7 +1,8 @@
 [package]
-name = "rustls"
+name = "rustyls"
 version = "0.1.0"
-authors = ["Taillook <jousoku@gmail.com>"]
+authors = ["@Taillook"]
+description = "List directory contents by Rust"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
