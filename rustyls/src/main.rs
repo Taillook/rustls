@@ -3,6 +3,10 @@ use std::{env, fs, path::Path, path::PathBuf, process, vec::Vec};
 
 mod print;
 
+struct CommandFlag {
+    colmuns: bool,
+}
+
 fn main() {
     let app = app_from_crate!()
             .arg(Arg::with_name("columns")
@@ -14,7 +18,18 @@ fn main() {
                 .index(1)
             );
     let matches = app.get_matches();
-    if matches.is_present("columns") {
+
+    let command_flag = CommandFlag {
+        colmuns: matches.is_present("columns"),
+    };
+
+    let flag_called = command_flag.colmuns;
+
+    if command_flag.colmuns {
+        colmuns(matches.value_of("file"));
+    }
+
+    if !flag_called {
         colmuns(matches.value_of("file"));
     }
 }
