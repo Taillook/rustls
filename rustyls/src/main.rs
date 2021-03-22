@@ -1,4 +1,4 @@
-use clap::{Arg, app_from_crate, crate_name, crate_version, crate_authors, crate_description};
+use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
 use std::{env, fs, path::Path, path::PathBuf, process, vec::Vec};
 
 mod print;
@@ -9,14 +9,12 @@ struct CommandFlag {
 
 fn main() {
     let app = app_from_crate!()
-            .arg(Arg::with_name("columns")
+        .arg(
+            Arg::with_name("columns")
                 .help("list entries by columns")
-                .short("C")
-            )
-            .arg(Arg::with_name("file")
-                .help("FILE")
-                .index(1)
-            );
+                .short("C"),
+        )
+        .arg(Arg::with_name("file").help("FILE").index(1));
     let matches = app.get_matches();
 
     let command_flag = CommandFlag {
