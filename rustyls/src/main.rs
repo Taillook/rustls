@@ -3,7 +3,8 @@ use std::{env, fs, path::Path, path::PathBuf, process, vec::Vec};
 
 mod print;
 
-struct CommandFlag {
+/// struct of flag for print.
+struct CommandFlagForPrint {
     colmuns: bool,
 }
 
@@ -17,7 +18,7 @@ fn main() {
         .arg(Arg::with_name("file").help("FILE").index(1));
     let matches = app.get_matches();
 
-    let command_flag = CommandFlag {
+    let command_flag = CommandFlagForPrint {
         colmuns: matches.is_present("columns"),
     };
 
