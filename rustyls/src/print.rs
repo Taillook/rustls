@@ -85,3 +85,14 @@ pub fn printcol(pathbufs: &[PathBuf]) {
         }
     }
 }
+
+pub fn printscol(pathbufs: &[PathBuf]) {
+    if pathbufs.is_empty() {
+        return;
+    }
+
+    for pathbuf in pathbufs.iter() {
+        let file_name = file_name_by_pathbuf(pathbuf);
+        println!("{}", file_name);
+    }
+}
