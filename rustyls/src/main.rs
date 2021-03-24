@@ -3,11 +3,6 @@ use std::{env, fs, path::Path, path::PathBuf, process, vec::Vec};
 
 mod print;
 
-/// struct of flag for print.
-struct CommandFlagForPrint {
-    colmuns: bool,
-}
-
 fn main() {
     let app = app_from_crate!()
         .arg(
@@ -15,20 +10,19 @@ fn main() {
                 .help("list entries by columns")
                 .short("C"),
         )
+        .arg(
+            Arg::with_name("one")
+                .help("list one file per line")
+                .short("1"),
+        )
         .arg(Arg::with_name("file").help("FILE").index(1));
     let matches = app.get_matches();
 
-    let command_flag = CommandFlagForPrint {
-        colmuns: matches.is_present("columns"),
-    };
-
-    let flag_called = command_flag.colmuns;
-
-    if command_flag.colmuns {
+    if matches.is_present("columns") {
         colmuns(matches.value_of("file"));
-    }
-
-    if !flag_called {
+    } else if matches.is_present("one") {
+        one(matches.value_of("file"));
+    } else {
         colmuns(matches.value_of("file"));
     }
 }
@@ -50,6 +44,28 @@ fn colmuns(file_name: Option<&str>) {
     if target_path.is_dir() {
         let pathbufs = filter_invisible(&read_dir_sorted(target_path));
         print::printcol(&pathbufs.unwrap());
+    } else {
+        println!("{}", target_path.to_str().unwrap());
+    }
+}
+
+fn one(file_name: Option<&str>) {
+    let target_path_name = match file_name {
+        Some(path) => path.to_string(),
+        None => "./".to_string(),
+    };
+
+    let target_path = Path::new(&target_path_name);
+    if !target_path.exists() {
+        println!(
+            "rustls: {}: No such file or directory",
+            target_path.to_str().unwrap()
+        );
+        process::exit(1);
+    }
+    if target_path.is_dir() {
+        let pathbufs = filter_invisible(&read_dir_sorted(target_path));
+        print::printscol(&pathbufs.unwrap());
     } else {
         println!("{}", target_path.to_str().unwrap());
     }
