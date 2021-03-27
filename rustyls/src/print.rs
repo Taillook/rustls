@@ -96,3 +96,18 @@ pub fn printscol(pathbufs: &[PathBuf]) {
         println!("{}", file_name);
     }
 }
+
+pub fn printstream(pathbufs: &[PathBuf]) {
+    if pathbufs.is_empty() {
+        return;
+    }
+
+    for (idx, pathbuf) in pathbufs.iter().enumerate() {
+        let file_name = file_name_by_pathbuf(pathbuf);
+        match pathbufs.len() == idx + 1 {
+            false => print!("{}, ", file_name),
+            true => print!("{}", file_name),
+        }
+    }
+    println!();
+}
