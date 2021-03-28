@@ -1,5 +1,8 @@
 use libc::{ioctl, winsize, STDOUT_FILENO, TIOCGWINSZ};
-use std::{mem, path::PathBuf, vec::Vec};
+use std::{fs, mem, ptr, path::PathBuf, vec::Vec, os::unix::fs::MetadataExt, ffi::CStr};
+
+mod filesystem;
+use filesystem::FileSystem;
 
 fn window_size() -> Option<usize> {
     let fd = STDOUT_FILENO;
@@ -110,4 +113,54 @@ pub fn printstream(pathbufs: &[PathBuf]) {
         }
     }
     println!();
+}
+
+pub fn printlong(pathbufs: &[PathBuf]) {
+    if pathbufs.is_empty() {
+        return;
+    }
+
+    for pathbuf in pathbufs.iter() {
+        let path = pathbuf.as_path();
+        let file_name = file_name_by_pathbuf(pathbuf);
+        let metadata = path.metadata().expect("metadata call failed");
+        let len = metadata.len();
+        let permission = pathbuf.permission();
+        println!("{}{} {} {} {} {}", type_str(metadata.file_type()), permission, get_unix_username(metadata.uid()).unwrap(), metadata.gid(), len, file_name);
+    }
+}
+
+fn type_str(file_type: fs::FileType) -> &'static str {
+    if file_type.is_dir() {
+        "d"
+    } else if file_type.is_file() {
+        "-"
+    } else {
+        "l"
+    }
+}
+
+fn get_unix_username(uid: u32) -> Option<String> {
+
+    unsafe {
+        let mut result = ptr::null_mut();
+        let amt = match libc::sysconf(libc::_SC_GETPW_R_SIZE_MAX) {
+            n if n < 0 => 512 as usize,
+            n => n as usize,
+        };
+        let mut buf = Vec::with_capacity(amt);
+        let mut passwd: libc::passwd = mem::zeroed();
+
+        match libc::getpwuid_r(uid, &mut passwd, buf.as_mut_ptr(),
+                              buf.capacity() as libc::size_t,
+                              &mut result) {
+           0 if !result.is_null() => {
+               let ptr = passwd.pw_name as *const _;
+               let username = CStr::from_ptr(ptr).to_str().unwrap().to_owned();
+               Some(username)
+           },
+           _ => None
+        }
+    }
+
 }
