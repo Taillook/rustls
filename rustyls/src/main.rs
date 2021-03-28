@@ -20,6 +20,11 @@ fn main() {
                 .help("fill width with a comma separated list of entries")
                 .short("m"),
         )
+        .arg(
+            Arg::with_name("long")
+                .help("use a long listing format")
+                .short("l"),
+        )
         .arg(Arg::with_name("file").help("FILE").index(1));
     let matches = app.get_matches();
 
@@ -29,6 +34,8 @@ fn main() {
         one(matches.value_of("file"));
     }  else if matches.is_present("stream") {
         stream(matches.value_of("file"));
+    }  else if matches.is_present("long") {
+        long(matches.value_of("file"));
     } else {
         colmuns(matches.value_of("file"));
     }
@@ -95,6 +102,28 @@ fn stream(file_name: Option<&str>) {
     if target_path.is_dir() {
         let pathbufs = filter_invisible(&read_dir_sorted(target_path));
         print::printstream(&pathbufs.unwrap());
+    } else {
+        println!("{}", target_path.to_str().unwrap());
+    }
+}
+
+fn long(file_name: Option<&str>) {
+    let target_path_name = match file_name {
+        Some(path) => path.to_string(),
+        None => "./".to_string(),
+    };
+
+    let target_path = Path::new(&target_path_name);
+    if !target_path.exists() {
+        println!(
+            "rustls: {}: No such file or directory",
+            target_path.to_str().unwrap()
+        );
+        process::exit(1);
+    }
+    if target_path.is_dir() {
+        let pathbufs = filter_invisible(&read_dir_sorted(target_path));
+        print::printlong(&pathbufs.unwrap());
     } else {
         println!("{}", target_path.to_str().unwrap());
     }
